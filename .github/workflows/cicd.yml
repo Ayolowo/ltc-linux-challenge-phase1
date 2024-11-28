@@ -48,7 +48,9 @@ jobs:
 
       # Runs a set of terraform commands using the runners shell
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd aws
+          terraform init
 
       - name: Terraform Validate
         run: |
