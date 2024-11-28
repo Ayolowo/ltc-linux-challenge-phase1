@@ -85,5 +85,6 @@ jobs:
 
       - name: Deploy to AWS
         run: |
+          cd aws
           terraform init
           terraform apply -auto-approve
