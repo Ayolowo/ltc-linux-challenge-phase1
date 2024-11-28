@@ -76,3 +76,4 @@ jobs:
             terraform apply -auto-approve
           elif [[ "${{ github.event.inputs.action }}" == "destroy" ]]; then
             terraform destroy -auto-approve
+          fi
