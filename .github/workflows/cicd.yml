@@ -72,6 +72,7 @@ jobs:
       - name: Execute Terraform
         run: |
           cd aws
+          terraform init
           if [[ "${{ github.event.inputs.action }}" == "apply" ]]; then
             terraform apply -auto-approve
           elif [[ "${{ github.event.inputs.action }}" == "destroy" ]]; then
