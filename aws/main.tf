@@ -1,9 +1,19 @@
+# Use S3 as Terraform State backend
+terraform {
+  backend "s3" {
+    bucket         = "terraform-backend-ltc"
+    key            = "terraform/state.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-lock table" # Optional, for state locking
+  }
+}
+
 # Configure the AWS Provider
 # Define the region variable
 variable "aws_region" {
   description = "The AWS region to deploy the CTF lab"
   type        = string
-  default     = "us-east-1"  # Default region if not specified
+  default     = "us-east-1" # Default region if not specified
 }
 
 # Configure the AWS Provider with the variable region
@@ -14,7 +24,7 @@ provider "aws" {
 # Create a VPC
 resource "aws_vpc" "ctf_vpc" {
   cidr_block = "10.0.0.0/16"
-  
+
   tags = {
     Name = "CTF Lab VPC"
   }
@@ -93,7 +103,7 @@ data "template_file" "user_data" {
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
-  
+
   filter {
     name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
@@ -101,7 +111,7 @@ data "aws_ami" "amazon_linux_2" {
 }
 
 resource "aws_instance" "ctf_instance" {
-  ami           = data.aws_ami.amazon_linux_2.id  # Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type
+  ami           = data.aws_ami.amazon_linux_2.id # Amazon Linux 2 AMI (HVM) - Kernel 5.10, SSD Volume Type
   instance_type = "t2.micro"
   # Remove the key_name attribute
 
