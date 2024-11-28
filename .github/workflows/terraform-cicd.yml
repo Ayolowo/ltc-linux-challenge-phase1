@@ -1,8 +1,19 @@
 name: cicd workflow
 
 on:
-  # Triggers the workflow on push request event but only for the "main" branch
+  # Trigger the workflow manually and allow input for Terraform actions
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Terraform action to run"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - apply
+          - destroy
+
+  # Trigger the workflow on push and pull request events for the "main" branch
   push:
     branches: ["main"]
 
@@ -58,33 +69,10 @@ jobs:
           terraform validate
         continue-on-error: false
 
-      - name: Terraform Plan
+      - name: Execute Terraform
         run: |
           cd aws
-          terraform plan
-
-  deploy:
-    name: Terraform apply
-    needs: plan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4.0.4
-        with:
-          node-version: 20
-
-      - name: Configure AWS Credentials for github actions
-        uses: aws-actions/configure-aws-credentials@v4.0.2
-        with:
-          audience: sts.amazonaws.com
-          aws-region: ${{secrets.AWS_REGION}}
-          role-to-assume: ${{secrets.ROLE_TO_ASSUME}}
-
-      - name: Deploy to AWS
-        run: |
-          cd aws
-          terraform init
-          terraform apply -auto-approve
+          if [[ "${{ github.event.inputs.action }}" == "apply" ]]; then
+            terraform apply -auto-approve
+          elif [[ "${{ github.event.inputs.action }}" == "destroy" ]]; then
+            terraform destroy -auto-approve
