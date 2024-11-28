@@ -1,9 +1,3 @@
-# Terraform module
-module "dynamodb-table" {
-  source  = "terraform-aws-modules/dynamodb-table/aws"
-  version = "4.2.0"
-}
-
 # Use S3 as Terraform State backend
 terraform {
   backend "s3" {
@@ -11,36 +5,6 @@ terraform {
     key            = "terraform/state.tfstate"
     region         = "us-east-1"
     dynamodb_table = "terraform-lock-table" # Optional, for state locking
-  }
-}
-
-# Create S3 bucket
-resource "aws_s3_bucket" "example" {
-  bucket = "terraform-backend-ltc"
-
-  tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
-  }
-}
-
-# Create Dynamodb table
-module "dynamodb_table" {
-  source = "terraform-aws-modules/dynamodb-table/aws"
-
-  name     = "terraform-lock-table"
-  hash_key = "id"
-
-  attributes = [
-    {
-      name = "id"
-      type = "N"
-    }
-  ]
-
-  tags = {
-    Terraform   = "true"
-    Environment = "staging"
   }
 }
 
