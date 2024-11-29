@@ -24,10 +24,11 @@ echo "3. Find the largest file in a specific directory"
 echo "--------------------------------------------------------------------------"
 # Find and display the largest file in /var/log
 sudo find /var/log/ -type f -exec du -h {} + | sort -rh | head -n 1
+echo
 # Check for large files in the journal directory
-cd /var/log/journal/97a372c89b40466b82e74b8562e66a97/
+cd /var/log/journal/
 # Search journal logs for the flag
-#sudo journalctl | grep -i "CTF{size_matters_in_linux}"
+sudo journalctl | grep -i "CTF{size_matters_in_linux}"
 
 echo "--------------------------------------------------------------------------"
 echo "4. Identify a user with a specific UID"
@@ -36,9 +37,7 @@ echo "--------------------------------------------------------------------------
 grep ':1001:' /etc/passwd
 # Switch to the user and navigate to their home directory
 echo
-sudo su - ctf_user -c "cd /home/ctf_user && find . -type f -name '*flag*'"
-echo
-cat flag.txt
+sudo su - ctf_user -c "cd && find . -type f -name '*flag*' && cat flag.txt"
 
 echo "--------------------------------------------------------------------------"
 echo "5. Locate a file with specific permissions"
@@ -57,6 +56,7 @@ sudo ps aux | grep -i 8080
 # Navigate to a directory and inspect the relevant script
 cd
 cd /home/ec2-user/ctf_challenges/ || exit 1
+echo
 cat port_8080_service.sh
 
 echo "--------------------------------------------------------------------------"
@@ -68,6 +68,6 @@ base64 -d encoded_flag.txt > decoded_file.txt
 cat decoded_file.txt
 echo
 echo "--------------------------------------------------------------------------"
-echo "--------------------------------------------------------------------------"
 # End of script
+echo
 echo "Script execution complete!"
