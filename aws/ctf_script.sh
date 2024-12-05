@@ -51,13 +51,12 @@ sudo cat /root/everyone_can_access_me
 echo "--------------------------------------------------------------------------"
 echo "6. Find a process running on a specific port"
 echo "--------------------------------------------------------------------------"
-# Check for processes using port 8080
-sudo ps aux | grep -i 8080
-# Navigate to a directory and inspect the relevant script
-cd
-cd /home/ec2-user/ctf_challenges/ || exit 1
-echo
-cat port_8080_service.sh
+# Update | netcat wasnt installed on linux ec2 server which made it difficult to
+# search for the service running on port :8080
+sudo yum install -y nmap-ncat # to forcefully install nc(netcat)
+nohup ./port_8080_service.sh # kill the zombie service if it refuses to run
+curl http://localhost:8080
+
 
 echo "--------------------------------------------------------------------------"
 echo "7. Decode a base64 encoded message"
